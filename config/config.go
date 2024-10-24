@@ -1,5 +1,11 @@
 package config
 
+import (
+	"log"
+
+	"github.com/spf13/viper"
+)
+
 type Config struct {
 	App struct {
 		Name string
@@ -14,7 +20,7 @@ type Config struct {
 	}
 }
 
-var AppConfig = *Config
+var AppConfig *Config
 
 func InitConfig() {
 	viper.SetConfigName("config")   // name of config file (without extension)不需要加.yaml后缀
@@ -28,7 +34,7 @@ func InitConfig() {
 	}
 
 	AppConfig = &Config{}  // 实例化Config结构体
-	err = viper.Unmarshal(&AppConfig)
+	err = viper.Unmarshal(AppConfig)
 	if err != nil {
 		log.Fatalf("Error unmarshaling config file, %s", err)
 	}
