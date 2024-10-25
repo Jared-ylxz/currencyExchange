@@ -11,11 +11,11 @@ func main() {
 	config.InitConfig()
 	fmt.Println("Hello, World!")
 
-	r := gin.Default()
+	r := gin.Default() // create a gin router instance
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	r.Run()
+	r.Run(fmt.Sprintf("%s:%s", config.AppConfig.App.Host, config.AppConfig.App.Port))
 }

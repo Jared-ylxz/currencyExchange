@@ -1,10 +1,11 @@
 app:
   name: CurrencyExchangeApp
-  port: :8080
+  port: 9001
+  host: localhost
 
 database:
   host: localhost
-  port: :3306
+  port: 3306
   user: your_username
   name: currency_exchange
   password: your_password

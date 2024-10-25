@@ -10,6 +10,7 @@ type Config struct {
 	App struct {
 		Name string
 		Port string
+		Host string
 	}
 	Database struct {
 		Host     string
