@@ -4,14 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/thinkerou/favicon"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default() // create a gin router instance
+	r.Use(favicon.New("./favicon.ico"))
 
-	auth := r.Group("/api/auth")
+	public := r.Group("/api/public")
 	{
-		auth.POST("/login", func(ctx *gin.Context) {
+		public.GET("/ping", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "pong",
+			})
+		})
+	}
+
+	private := r.Group("/api/auth")
+	{
+		private.POST("/login", func(ctx *gin.Context) {
 			ctx.AbortWithStatusJSON(
 				http.StatusOK,
 				gin.H{
@@ -19,7 +30,7 @@ func SetupRouter() *gin.Engine {
 				},
 			)
 		})
-		auth.POST("/register", func(ctx *gin.Context) {
+		private.POST("/register", func(ctx *gin.Context) {
 			ctx.AbortWithStatusJSON(
 				http.StatusOK,
 				gin.H{
@@ -28,5 +39,6 @@ func SetupRouter() *gin.Engine {
 			)
 		})
 	}
+
 	return r
 }
