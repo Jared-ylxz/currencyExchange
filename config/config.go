@@ -13,11 +13,14 @@ type Config struct {
 		Host string
 	}
 	Database struct {
-		Host     string
-		Port     string
-		User     string
-		Name     string
-		Password string
+		Host            string
+		Port            string
+		User            string
+		Name            string
+		Password        string
+		MaxOpenConns    int
+		MaxIdleConns    int
+		ConnMaxLifetime int
 	}
 }
 
@@ -39,4 +42,6 @@ func InitConfig() {
 	if err != nil {
 		log.Fatalf("Error unmarshaling config file, %s", err)
 	}
+
+	InitDB()
 }

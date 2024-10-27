@@ -6,6 +6,9 @@ app:
 database:
   host: localhost
   port: 3306
-  user: your_username
+  user: root
+  password: root
   name: currency_exchange
-  password: your_password
+  MaxOpenConns: 10
+  MaxIdleConns: 5
+  ConnMaxLifetime: 10
