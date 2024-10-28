@@ -8,9 +8,10 @@ import (
 
 type Config struct {
 	App struct {
-		Name string
-		Port string
-		Host string
+		Name   string
+		Port   string
+		Host   string
+		Secret string
 	}
 	Database struct {
 		Host            string

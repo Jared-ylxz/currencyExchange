@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	DB *gorm.DB
+	Db *gorm.DB
 )

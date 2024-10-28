@@ -1,7 +1,8 @@
 app:
   name: CurrencyExchangeApp
-  port: 9001
+  port: 8081
   host: localhost
+  secret: zajednički_ključ+gt4wdfhy9
 
 database:
   host: localhost
