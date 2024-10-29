@@ -12,7 +12,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default() // create a gin router instance
 	r.Use(favicon.New("./favicon.ico"))
 
-	public := r.Group("/api/public")
+	public := r.Group("/api/v1/public")
 	{
 		public.GET("/ping", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{
@@ -21,11 +21,19 @@ func SetupRouter() *gin.Engine {
 		})
 	}
 
-	private := r.Group("/api/auth")
+	user := r.Group("/api/v1/users")
 	{
-		private.POST("/login", controllers.Login)
-		private.POST("/register", controllers.Register)
+		user.POST("/login", controllers.Login)
+		user.POST("/register", controllers.Register)
 	}
+
+	private := r.Group("/api/v1")
+	private.GET("/exchange-rates", controllers.GetExchangeRate)
+	// api.Use(middlewares.AuthMiddleWare())
+	{
+		private.POST("/exchange-rates", controllers.CreateExchangeRate)
+	}
+
 
 	return r
 }
