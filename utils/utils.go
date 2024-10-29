@@ -20,7 +20,7 @@ func GenerateJWT(username string) (string, error) {
 		"exp":      time.Now().Add(time.Hour * 2).Unix(),
 	})
 	signedToken, err := token.SignedString([]byte(fmt.Sprintf("secret%s", config.AppConfig.App.Secret)))
-	return signedToken, err
+	return "Bearer " + signedToken, err
 }
 
 func VerifyPassword(password string, hashedPassword string) bool {
