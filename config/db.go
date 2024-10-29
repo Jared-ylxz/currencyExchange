@@ -26,5 +26,5 @@ func InitDB() {
 	sqlDB.SetMaxIdleConns(AppConfig.Database.MaxIdleConns)
 	sqlDB.SetConnMaxLifetime(time.Duration(AppConfig.Database.ConnMaxLifetime) * time.Second) // 10 seconds
 
-	global.DB = db
+	global.Db = db
 }
