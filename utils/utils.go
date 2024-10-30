@@ -28,6 +28,6 @@ func VerifyPassword(password string, hashedPassword string) bool {
 	return err == nil
 }
 
-func ParseJWT(inputToken string) (string, error) {
-	// token, err := jwt.Parse()
-}
+// func ParseJWT(inputToken string) (string, error) {
+// 	token, err := jwt.Parse()
+// }
