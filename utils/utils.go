@@ -27,3 +27,7 @@ func VerifyPassword(password string, hashedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }
+
+func ParseJWT(inputToken string) (string, error) {
+	// token, err := jwt.Parse()
+}
