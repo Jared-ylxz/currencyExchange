@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"exchangeapp/config"
 	"fmt"
 	"time"
@@ -28,6 +29,25 @@ func VerifyPassword(password string, hashedPassword string) bool {
 	return err == nil
 }
 
-// func ParseJWT(inputToken string) (string, error) {
-// 	token, err := jwt.Parse()
-// }
+func ParseJWT(inputToken string) (string, error) {
+	token, err := jwt.Parse(inputToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, error.New("Unexpected signing method")
+		}
+		return []byte(config.AppConfig.App.Secret), nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		username := claims["username"].(string)
+		if !ok {
+			return "", errors.New("username claim is not a string")
+		}
+		return username, nil
+	}
+
+	return "", err
+}
