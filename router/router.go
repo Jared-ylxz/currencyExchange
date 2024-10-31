@@ -2,6 +2,7 @@ package router
 
 import (
 	"exchangeapp/controllers"
+	"exchangeapp/middlewares"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,11 +30,10 @@ func SetupRouter() *gin.Engine {
 
 	private := r.Group("/api/v1")
 	private.GET("/exchange-rates", controllers.GetExchangeRate)
-	// api.Use(middlewares.AuthMiddleWare())
+	private.Use(middlewares.AuthMiddleware())
 	{
 		private.POST("/exchange-rates", controllers.CreateExchangeRate)
 	}
-
 
 	return r
 }
