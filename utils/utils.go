@@ -32,7 +32,7 @@ func VerifyPassword(password string, hashedPassword string) bool {
 func ParseJWT(inputToken string) (string, error) {
 	token, err := jwt.Parse(inputToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("unexpected signing method")
+			return "", errors.New("unexpected signing method")
 		}
 		return []byte(config.AppConfig.App.Secret), nil
 	})
