@@ -16,19 +16,20 @@ func CreateArticle(c *gin.Context) {
 		return
 	}
 
-	// var user_id int
-	// user_id, exists := c.Get("user_id")
-	// if user_id.(string) {
-	// 	if exists {
-	// 		nuser_id, err := strconv.ParseUint(user_id, 10, 64)
-	// 		if err == nil {
-	// 			article.AuthorID = nuser_id
-	// 		}
-	// 	}
-	username, _ := c.Get("username")
-	fmt.Println(11111111111, username)
+	any_username, exists := c.Get("username")
+	if exists {
+		username := any_username.(string)
+		user := models.User{Username: username}
+		fmt.Println(2222222, user)
+		a := global.Db.First(&user)
+		fmt.Println(111111111111111111, &a, a, a.Error, a.RowsAffected)
+		// var author models.Article = global.Db.First(&user)
+		// fmt.Println(11111111111, author)
+		// article.AuthorID = author.ID
+	}
 
-	if err := global.Db.Create(&article).Error; err != nil {
+	err := global.Db.Create(&article).Error
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
