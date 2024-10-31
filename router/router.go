@@ -33,6 +33,8 @@ func SetupRouter() *gin.Engine {
 	private.Use(middlewares.AuthMiddleware())
 	{
 		private.POST("/exchange-rates", controllers.CreateExchangeRate)
+
+		private.POST("/articles", controllers.CreateArticle)
 	}
 
 	return r
