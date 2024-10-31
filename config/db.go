@@ -2,6 +2,7 @@ package config
 
 import (
 	"exchangeapp/global"
+	"exchangeapp/models"
 	"fmt"
 	"time"
 
@@ -26,5 +27,10 @@ func InitDB() {
 	sqlDB.SetMaxIdleConns(AppConfig.Database.MaxIdleConns)
 	sqlDB.SetConnMaxLifetime(time.Duration(AppConfig.Database.ConnMaxLifetime) * time.Second) // 10 seconds
 
+	if err := db.AutoMigrate(&models.User{}, &models.ExchangeRate{}, &models.Article{}); err != nil {
+		panic("failed to migrate database")
+	}
+
 	global.Db = db
+
 }
