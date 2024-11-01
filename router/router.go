@@ -30,11 +30,13 @@ func SetupRouter() *gin.Engine {
 
 	private := r.Group("/api/v1")
 	private.GET("/exchange-rates", controllers.GetExchangeRate)
+	private.GET("/articles", controllers.GetArticles)
 	private.Use(middlewares.AuthMiddleware())
 	{
 		private.POST("/exchange-rates", controllers.CreateExchangeRate)
-
 		private.POST("/articles", controllers.CreateArticle)
+		private.GET("/articles/:id", controllers.GetArticle)
+		private.DELETE("/articles/:id", controllers.DeleteArticle)
 	}
 
 	return r
