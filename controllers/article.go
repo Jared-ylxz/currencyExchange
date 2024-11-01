@@ -17,15 +17,17 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	any_username, exists := c.Get("username")
+	fmt.Println(111, any_username, any_username.(string))
 	if exists {
 		username := any_username.(string)
-		user := models.User{Username: username}
-		fmt.Println(2222222, user)
-		a := global.Db.First(&user)
-		fmt.Println(111111111111111111, &a, a, a.Error, a.RowsAffected)
-		// var author models.Article = global.Db.First(&user)
-		// fmt.Println(11111111111, author)
-		// article.AuthorID = author.ID
+		fmt.Println(222, username)
+		var user models.User
+		result := global.Db.First(&user, "username = ?", username)
+		if result.Error != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+		article.AuthorID = user.ID
 	}
 
 	err := global.Db.Create(&article).Error
