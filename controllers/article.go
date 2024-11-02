@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"exchangeapp/global"
 	"exchangeapp/models"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,19 +49,42 @@ func CreateArticle(ctx *gin.Context) {
 func GetArticles(ctx *gin.Context) {
 	redisData, err := global.RedisClient.Get(ctx, allCacheKey).Result()
 	if err == nil && redisData != "" {
-		fmt.Println("Redis get data:", redisData)
-		ctx.JSON(http.StatusOK, redisData)
+		// redis 缓存命中
+		fmt.Println("Redis get data!")
+		var articles []models.Article
+		// 将 JSON 字符串反序列化为文章列表
+		err := json.Unmarshal([]byte(redisData), &articles)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to unmarshal articles from cache"})
+			return
+		}
+		ctx.JSON(http.StatusOK, articles)
 		return
 	} else if err != nil {
-		fmt.Println("Redis get error:", err)
+		// redis 缓存未命中, 从数据库获取数据并缓存
+		fmt.Println("Redis not found:", err)
 		var articles []models.Article
 		result := global.Db.Find(&articles, "deleted_at IS NULL")
 		if result.Error != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
 			return
 		}
+		// 将文章列表序列化为 JSON 字符串
+		jsonData, err := json.Marshal(articles)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to marshal articles"})
+			return
+		}
+		// 将 JSON 字符串存储到 Redis 中
+		statusCmd := global.RedisClient.Set(ctx, allCacheKey, jsonData, time.Hour*24)
+		if statusCmd.Err() != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set cache in Redis"})
+			return
+		}
 		ctx.JSON(http.StatusOK, articles)
+		return
 	} else {
+		// redis 报错
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
