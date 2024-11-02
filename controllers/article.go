@@ -88,24 +88,6 @@ func GetArticles(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-
-	// var articles []models.Article
-	// // var ArticleWithLikes struct {
-	// // 	models.Article
-	// // 	Likes int `json:"likes"`
-	// // }
-
-	// result := global.Db.Find(&articles, "deleted_at IS NULL")
-	// if result.Error != nil {
-	// 	ctx.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
-	// 	return
-	// }
-
-	// // for a, _ := range articles {
-	// // 	var a.likes int
-	// // 	a.likes := global.RedisClient.Get(fmt.Sprintf("article:%d:likes", a.ID)).Int()
-	// // }
-	// ctx.JSON(http.StatusOK, articles)
 }
 
 func GetArticle(c *gin.Context) {
