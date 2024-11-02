@@ -90,27 +90,27 @@ func GetArticles(ctx *gin.Context) {
 	}
 }
 
-func GetArticle(c *gin.Context) {
+func GetArticle(ctx *gin.Context) {
 	var article models.Article
-	id := c.Param("id")
+	id := ctx.Param("id")
 	result := global.Db.First(&article, "id = ?", id)
 	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
 		return
 	}
-	c.JSON(http.StatusOK, article)
+	ctx.JSON(http.StatusOK, article)
 }
 
-func DeleteArticle(c *gin.Context) {
+func DeleteArticle(ctx *gin.Context) {
 	var article models.Article
-	id := c.Param("id")
+	id := ctx.Param("id")
 	result := global.Db.First(&article, "id = ?", id)
 	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
 		return
 	}
 	global.Db.Delete(&article) // 如果一个 model 有 DeletedAt 字段，则软删除。硬删除需要 db.Unscoped().Delete(&article)
-	c.JSON(http.StatusOK, gin.H{"message": "Article deleted successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Article deleted successfully"})
 
 	if err := global.RedisClient.Del(ctx, allCacheKey).Err(); err != nil {
 		fmt.Println("Redis delete error:", err)
