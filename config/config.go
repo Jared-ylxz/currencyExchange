@@ -52,4 +52,5 @@ func InitConfig() {
 	}
 
 	InitDB()
+	InitRedis()
 }

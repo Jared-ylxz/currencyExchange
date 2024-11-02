@@ -9,7 +9,7 @@ import (
 	"exchangeapp/global"
 )
 
-func IntiRedis() {
+func InitRedis() {
 	RedisClient := redis.NewClient(&redis.Options{
 		Addr:     AppConfig.Redis.Host + ":" + AppConfig.Redis.Port,
 		Password: AppConfig.Redis.Password,

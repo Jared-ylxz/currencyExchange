@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"context"
 	"exchangeapp/global"
 	"fmt"
 	"net/http"
@@ -14,7 +13,7 @@ func LikeArticle(ctx *gin.Context) {
 	articleId := ctx.Param("articleId")
 	redisKey := fmt.Sprintf("article:%s:likes", articleId)
 
-	if err := global.RedisClient.Incr(context.Background(), redisKey).Err(); err != nil {
+	if err := global.RedisClient.Incr(ctx, redisKey).Err(); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to like article",
 		})
@@ -30,7 +29,7 @@ func GetLikes(ctx *gin.Context) {
 	articleId := ctx.Param("articleId")
 	redisKey := fmt.Sprintf("article:%s:likes", articleId)
 
-	likes, err := global.RedisClient.Get(context.Background(), redisKey).Result()
+	likes, err := global.RedisClient.Get(ctx, redisKey).Result()
 	if err == redis.Nil {
 		likes = "0"
 	} else if err != nil {
