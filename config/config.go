@@ -23,6 +23,13 @@ type Config struct {
 		MaxIdleConns    int
 		ConnMaxLifetime int
 	}
+	Redis struct {
+		Host     string
+		Port     string
+		Password string
+		DB       int
+		PoolSize int
+	}
 }
 
 var AppConfig *Config
