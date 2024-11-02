@@ -111,4 +111,8 @@ func DeleteArticle(c *gin.Context) {
 	}
 	global.Db.Delete(&article) // 如果一个 model 有 DeletedAt 字段，则软删除。硬删除需要 db.Unscoped().Delete(&article)
 	c.JSON(http.StatusOK, gin.H{"message": "Article deleted successfully"})
+
+	if err := global.RedisClient.Del(ctx, allCacheKey).Err(); err != nil {
+		fmt.Println("Redis delete error:", err)
+	}
 }
