@@ -19,9 +19,10 @@ func LikeArticle(ctx *gin.Context) {
 		})
 		return
 	}
+	likes := global.RedisClient.Get(ctx, redisKey).Val()
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Article liked successfully",
+		"likes": likes,
 	})
 }
 

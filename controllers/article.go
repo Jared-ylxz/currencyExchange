@@ -9,6 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var allCacheKey = "articles"
+var oneCacheKey = "articles:%d"
+
 func CreateArticle(c *gin.Context) {
 	var article models.Article
 	if err := c.ShouldBindJSON(&article); err != nil {
@@ -37,15 +40,27 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, article)
+
+	// global.RedisClient.Del(ctx, allCacheKey)
 }
 
 func GetArticles(c *gin.Context) {
 	var articles []models.Article
+	// var ArticleWithLikes struct {
+	// 	models.Article
+	// 	Likes int `json:"likes"`
+	// }
+
 	result := global.Db.Find(&articles, "deleted_at IS NULL")
 	if result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
 		return
 	}
+
+	// for a, _ := range articles {
+	// 	var a.likes int
+	// 	a.likes := global.RedisClient.Get(fmt.Sprintf("article:%d:likes", a.ID)).Int()
+	// }
 	c.JSON(http.StatusOK, articles)
 }
 
