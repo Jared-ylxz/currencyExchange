@@ -12,22 +12,20 @@ import (
 var allCacheKey = "articles"
 var oneCacheKey = "articles:%d"
 
-func CreateArticle(c *gin.Context) {
+func CreateArticle(ctx *gin.Context) {
 	var article models.Article
-	if err := c.ShouldBindJSON(&article); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindJSON(&article); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	any_username, exists := c.Get("username")
-	fmt.Println(111, any_username, any_username.(string))
+	any_username, exists := ctx.Get("username")
 	if exists {
 		username := any_username.(string)
-		fmt.Println(222, username)
 		var user models.User
 		result := global.Db.First(&user, "username = ?", username)
 		if result.Error != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 			return
 		}
 		article.AuthorID = user.ID
@@ -35,33 +33,54 @@ func CreateArticle(c *gin.Context) {
 
 	err := global.Db.Create(&article).Error
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, article)
+	ctx.JSON(http.StatusCreated, article)
 
-	// global.RedisClient.Del(ctx, allCacheKey)
+	if err := global.RedisClient.Del(ctx, allCacheKey).Err(); err != nil {
+		fmt.Println("Redis delete error:", err)
+	}
 }
 
-func GetArticles(c *gin.Context) {
-	var articles []models.Article
-	// var ArticleWithLikes struct {
-	// 	models.Article
-	// 	Likes int `json:"likes"`
-	// }
-
-	result := global.Db.Find(&articles, "deleted_at IS NULL")
-	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
+func GetArticles(ctx *gin.Context) {
+	redisData, err := global.RedisClient.Get(ctx, allCacheKey).Result()
+	if err == nil && redisData != "" {
+		fmt.Println("Redis get data:", redisData)
+		ctx.JSON(http.StatusOK, redisData)
+		return
+	} else if err != nil {
+		fmt.Println("Redis get error:", err)
+		var articles []models.Article
+		result := global.Db.Find(&articles, "deleted_at IS NULL")
+		if result.Error != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
+			return
+		}
+		ctx.JSON(http.StatusOK, articles)
+	} else {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	// for a, _ := range articles {
-	// 	var a.likes int
-	// 	a.likes := global.RedisClient.Get(fmt.Sprintf("article:%d:likes", a.ID)).Int()
+	// var articles []models.Article
+	// // var ArticleWithLikes struct {
+	// // 	models.Article
+	// // 	Likes int `json:"likes"`
+	// // }
+
+	// result := global.Db.Find(&articles, "deleted_at IS NULL")
+	// if result.Error != nil {
+	// 	ctx.JSON(http.StatusNotFound, gin.H{"error": "Articles not found"})
+	// 	return
 	// }
-	c.JSON(http.StatusOK, articles)
+
+	// // for a, _ := range articles {
+	// // 	var a.likes int
+	// // 	a.likes := global.RedisClient.Get(fmt.Sprintf("article:%d:likes", a.ID)).Int()
+	// // }
+	// ctx.JSON(http.StatusOK, articles)
 }
 
 func GetArticle(c *gin.Context) {

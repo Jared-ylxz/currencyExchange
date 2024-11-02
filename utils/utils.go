@@ -22,7 +22,7 @@ func VerifyPassword(password string, hashedPassword string) bool {
 func GenerateJWT(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
-		"exp":      time.Now().Add(time.Hour * 2).Unix(),
+		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 	signedToken, err := token.SignedString([]byte(config.AppConfig.App.Secret))
 	return "Bearer " + signedToken, err
