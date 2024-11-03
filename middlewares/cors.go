@@ -6,8 +6,8 @@ import (
 	"github.com/gin-contrib/cors"
 )
 
-func CORSMiddleware() {
-	cors.New(cors.Config{
+func CORSMiddleware() any {
+	return cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
