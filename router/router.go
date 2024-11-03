@@ -10,10 +10,13 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-	r := gin.Default() // create a gin router instance
-	r.Use(favicon.New("./favicon.ico"))
+	router := gin.Default() // create a gin router instance
+	router.Use(favicon.New("./favicon.ico"))
 
-	public := r.Group("/api/v1/public")
+	// middleware to handle CORS
+	router.Use(middlewares.CORSMiddleware())
+
+	public := router.Group("/api/v1/public")
 	{
 		public.GET("/ping", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{
@@ -22,13 +25,13 @@ func SetupRouter() *gin.Engine {
 		})
 	}
 
-	user := r.Group("/api/v1/users")
+	user := router.Group("/api/v1/users")
 	{
 		user.POST("/login", controllers.Login)
 		user.POST("/register", controllers.Register)
 	}
 
-	private := r.Group("/api/v1")
+	private := router.Group("/api/v1")
 	private.GET("/exchange-rates", controllers.GetExchangeRate)
 	private.GET("/articles", controllers.GetArticles)
 	private.GET("/article-likes/:articleId", controllers.GetLikes)
@@ -41,5 +44,5 @@ func SetupRouter() *gin.Engine {
 		private.POST("/article-likes/:articleId", controllers.LikeArticle)
 	}
 
-	return r
+	return router
 }
