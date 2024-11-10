@@ -31,10 +31,10 @@ list.value = [{
     name: 'apple'
 }]
 
-const user = reactive({ // 自动推导字段的类型
-    id: 1,
-    name: "Jared"
-})
+// const user = reactive({ // 自动推导字段的类型
+//     id: 1,
+//     name: "Jared"
+// })
 
 const luck = computed(()=>{ // 能自动推导出 const luck: ComputedRef<number>
     return count.value ** 2
