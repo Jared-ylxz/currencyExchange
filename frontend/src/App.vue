@@ -1,41 +1,32 @@
 <template>
-    <div>
-        <p>{{ count }}</p>
-        <p>￥{{ amount }}</p>
-        <ul>
-            <li v-for="item in list" :key="item.name">{{ item.name }}</li>
-        </ul>
-        <button @click="count++">运气加一</button>
-        <p>运气值：{{ luck }}</p>
-    </div>
-</template>
+    <el-container>
+      <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"  :ellipsis="true" @select="handleSelect">
+          <el-menu-item index="home">首页</el-menu-item>
+          <el-menu-item index="currencyExchange">兑换货币</el-menu-item>
+          <el-menu-item index="news">查看新闻</el-menu-item>
+          <el-menu-item index="login">登录</el-menu-item>
+          <el-menu-item index="register">注册</el-menu-item>
+          <el-menu-item index="logout">退出</el-menu-item>
+        </el-menu>
+      </el-header>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </template>
 
-<script setup lang="ts">
-import { ref, reactive, computed } from 'vue' // 给ref添加类型标注
+<script lang="ts" setup>
+import { ref } from 'vue'
 
-const count = ref(0)
-
-const amount = ref<number | string>('壹佰') // 泛型
-type ListItem = {
-    id: number
-    name: string
+const activeIndex = ref('home')
+const handleSelect = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath)
 }
-const list = ref<ListItem[]>([])
-list.value = [{
-    id: 1,
-    name: 'apple'
-}]
-
-const user = reactive({ // 自动推导字段的类型
-    id: 1,
-    name: "Jared"
-})
-
-const luck = computed(()=>{ // 能自动推导出 const luck: ComputedRef<number>
-    return count.value ** 2
-})
 </script>
 
-<style scoped>
-
+<style>
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
 </style>
