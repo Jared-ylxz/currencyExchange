@@ -4,9 +4,7 @@ import (
 	"exchangeapp/controllers"
 	"exchangeapp/middlewares"
 	"net/http"
-	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/thinkerou/favicon"
 )
@@ -16,14 +14,7 @@ func SetupRouter() *gin.Engine {
 	router.Use(favicon.New("./favicon.ico"))
 
 	// middleware to handle CORS
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	router.Use(middlewares.CORSMiddleware())
 
 	public := router.Group("/api/v1/public")
 	{
