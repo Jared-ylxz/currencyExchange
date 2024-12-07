@@ -34,12 +34,12 @@ func SetupRouter() *gin.Engine {
 	private := router.Group("/api/v1")
 	private.GET("/exchange-rates", controllers.GetExchangeRate)
 	private.GET("/articles", controllers.GetArticles)
+	private.GET("/articles/:id", controllers.GetArticle)
 	private.GET("/article-likes/:articleId", controllers.GetLikes)
 	private.Use(middlewares.AuthMiddleware())
 	{
 		private.POST("/exchange-rates", controllers.CreateExchangeRate)
 		private.POST("/articles", controllers.CreateArticle)
-		private.GET("/articles/:id", controllers.GetArticle)
 		private.DELETE("/articles/:id", controllers.DeleteArticle)
 		private.POST("/article-likes/:articleId", controllers.LikeArticle)
 	}
